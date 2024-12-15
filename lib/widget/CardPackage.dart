@@ -7,16 +7,16 @@ class CardPackage extends StatelessWidget {
   });
 
   final List packages;
-  final String specificImageUrl =
-      'http://backend-buzjet-revamp.test/api/destinations/1/image';
+  final String baseUrl = 'http://backend-buzjet-revamp.test/api/destinations/';
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: packages.length,
       itemBuilder: (context, index) {
-        print(
-            'Attempting to load image from: $specificImageUrl'); // Debug print
+        // Construct dynamic URL using package id
+        final String imageUrl = '$baseUrl${packages[index]['id']}/image';
+        print('Loading image from: $imageUrl'); // Debug print
 
         return Card(
           margin: const EdgeInsets.all(8.0),
@@ -24,7 +24,7 @@ class CardPackage extends StatelessWidget {
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(4.0),
               child: Image.network(
-                specificImageUrl,
+                imageUrl,
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -43,7 +43,7 @@ class CardPackage extends StatelessWidget {
               ),
             ),
             title: Text(packages[index]['name'] ?? 'No Name'),
-            subtitle: Text('Package ${index + 1}'),
+            subtitle: Text('${packages[index]['description']}'),
           ),
         );
       },
