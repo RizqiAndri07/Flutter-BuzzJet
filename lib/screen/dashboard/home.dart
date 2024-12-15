@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchPackages() async {
     final response = await http
-        .get(Uri.parse('http://backend-buzjet-api.test/api/destinations'));
+        .get(Uri.parse('http://backend-buzjet-revamp.test/api/destinations'));
     if (response.statusCode == 200) {
       setState(() {
         packages = json.decode(response.body)['data'];

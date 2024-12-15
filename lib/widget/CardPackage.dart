@@ -7,34 +7,43 @@ class CardPackage extends StatelessWidget {
   });
 
   final List packages;
-  final String baseUrl =
-      'http://backend-buzjet-api.test/api/destinations/'; // URL dasar API
+  final String specificImageUrl =
+      'http://backend-buzjet-revamp.test/api/destinations/1/image';
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: packages.length,
       itemBuilder: (context, index) {
-        // Bangun URL gambar secara dinamis menggunakan ID
-        String imageUrl = '$baseUrl${packages[index]['id']}/image';
-        // Print URL gambar untuk debugging
-        print('Image URL: $imageUrl');
+        print(
+            'Attempting to load image from: $specificImageUrl'); // Debug print
 
         return Card(
+          margin: const EdgeInsets.all(8.0),
           child: ListTile(
-            leading: packages[index]['img'] != null &&
-                    packages[index]['img'].isNotEmpty
-                ? Image.network(
-                    imageUrl,
-                    errorBuilder: (context, error, stackTrace) {
-                      print(
-                          'Failed to load image: $imageUrl'); // Print error message
-                      return Icon(Icons.broken_image);
-                    },
-                  )
-                : Icon(Icons.image_not_supported),
-            title: Text(packages[index]['name']),
-            subtitle: Text(packages[index]['description']),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(4.0),
+              child: Image.network(
+                specificImageUrl,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  print('Error loading image: $error'); // Debug print
+                  return const Icon(Icons.error_outline, size: 60);
+                },
+              ),
+            ),
+            title: Text(packages[index]['name'] ?? 'No Name'),
+            subtitle: Text('Package ${index + 1}'),
           ),
         );
       },
