@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screen/pages/detailPackage.dart'; // Pastikan Anda mengimpor halaman detail
 
 class CardPackage extends StatelessWidget {
   const CardPackage({
@@ -7,43 +8,45 @@ class CardPackage extends StatelessWidget {
   });
 
   final List packages;
-  final String specificImageUrl =
-      'http://backend-buzjet-revamp.test/api/destinations/1/image';
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: packages.length,
       itemBuilder: (context, index) {
-        print(
-            'Attempting to load image from: $specificImageUrl'); // Debug print
+        final package = packages[index];
+        final imageUrl =
+            'http://backend-buzjet-api.test/api/packages/${package['id']}/image';
+        print('Attempting to load image from: $imageUrl'); // Debug print
 
-        return Card(
-          margin: const EdgeInsets.all(8.0),
-          child: ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(4.0),
-              child: Image.network(
-                specificImageUrl,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  print('Error loading image: $error'); // Debug print
-                  return const Icon(Icons.error_outline, size: 60);
-                },
+        return MouseRegion(
+          onEnter: (_) => print('Hovering over card'), // Debug print
+          onExit: (_) => print('Not hovering over card'), // Debug print
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailPackage(package: package),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.all(8.0),
+              child: ListTile(
+                // leading: ClipRRect(
+                //   borderRadius: BorderRadius.circular(8.0),
+                //   child: Image.network(
+                //     imageUrl,
+                //     fit: BoxFit.cover,
+                //     width: 50.0,
+                //     height: 50.0,
+                //   ),
+                // ),
+                title: Text(package['name']),
+                subtitle: Text(package['description']),
               ),
             ),
-            title: Text(packages[index]['name'] ?? 'No Name'),
-            subtitle: Text('Package ${index + 1}'),
           ),
         );
       },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:buzz_jet/screen/auth/login.dart'; // Import LoginScreen
 import 'package:buzz_jet/screen/layout/mainlayout.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Menghilangkan banner debug
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Layout(), // Menggunakan Layout sebagai halaman utama
+      home: LoginScreen(), // Menggunakan LoginScreen sebagai halaman utama
     );
   }
 }
