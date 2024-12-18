@@ -4,6 +4,8 @@ import 'package:buzz_jet/screen/dashboard/profile.dart';
 import 'package:buzz_jet/screen/dashboard/setting.dart';
 
 class Layout extends StatefulWidget {
+  const Layout({super.key});
+
   @override
   _LayoutState createState() => _LayoutState();
 }
@@ -30,7 +32,10 @@ class _LayoutState extends State<Layout> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buzz Jet'),
+        title: Image.asset(
+          'assets/BuzJetLogo.png',
+          height: 40, // Sesuaikan tinggi gambar sesuai kebutuhan Anda
+        ),
       ),
       body: _pages[_selectedIndex], // Konten berdasarkan indeks aktif
       bottomNavigationBar: BottomNavigationBar(

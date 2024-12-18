@@ -19,7 +19,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment'),
+        title: const Text('Payment'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -28,11 +28,11 @@ class _PaymentPageState extends State<PaymentPage> {
           children: [
             Text(
               'Total Price: Rp ${widget.totalPrice.toStringAsFixed(0)}',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            Text('Select Payment Method:'),
-            SizedBox(height: 8),
+            const SizedBox(height: 16),
+            const Text('Select Payment Method:'),
+            const SizedBox(height: 8),
             Column(
               children: paymentMethods.map((method) {
                 return Card(
@@ -50,17 +50,17 @@ class _PaymentPageState extends State<PaymentPage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SuccessPage(),
+                    builder: (context) => const SuccessPage(),
                   ),
                 );
               },
-              child: Text('Proceed to Pay'),
+              child: const Text('Proceed to Pay'),
             ),
           ],
         ),

@@ -21,6 +21,15 @@ class DetailPackage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: Image.asset(
+                'assets/pantai.jpg',
+                width: double.infinity,
+                height: 200.0,
+                fit: BoxFit.cover,
+              ),
+            ),
             Text(
               package['name'],
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -37,88 +46,100 @@ class DetailPackage extends StatelessWidget {
             SizedBox(height: 8),
             Text('Capacity: ${package['capacity']} people'),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    int quantity = 1;
-                    double price = double.parse(package['price']);
-                    int capacity = package['capacity'];
-                    return StatefulBuilder(
-                      builder: (context, setState) {
-                        return AlertDialog(
-                          title: Text('Order Now'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('Price: ${currencyFormat.format(price)}'),
-                              SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Quantity:'),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.remove),
-                                        onPressed: () {
-                                          if (quantity > 1) {
-                                            setState(() {
-                                              quantity--;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                      Text('$quantity'),
-                                      IconButton(
-                                        icon: Icon(Icons.add),
-                                        onPressed: () {
-                                          if (quantity < capacity) {
-                                            setState(() {
-                                              quantity++;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      int quantity = 1;
+                      double price = double.parse(package['price']);
+                      int capacity = package['capacity'];
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            title: Text('Order Now'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Price: ${currencyFormat.format(price)}'),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Quantity:'),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.remove),
+                                          onPressed: () {
+                                            if (quantity > 1) {
+                                              setState(() {
+                                                quantity--;
+                                              });
+                                            }
+                                          },
+                                        ),
+                                        Text('$quantity'),
+                                        IconButton(
+                                          icon: Icon(Icons.add),
+                                          onPressed: () {
+                                            if (quantity < capacity) {
+                                              setState(() {
+                                                quantity++;
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                    'Total Price: ${currencyFormat.format(quantity * price)}'),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cancel'),
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                  'Total Price: ${currencyFormat.format(quantity * price)}'),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PaymentPage(
+                                          totalPrice: quantity * price),
+                                    ),
+                                  );
+                                },
+                                child: Text('Order'),
+                              ),
                             ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PaymentPage(
-                                        totalPrice: quantity * price),
-                                  ),
-                                );
-                              },
-                              child: Text('Order'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-              child: Text('Order Now'),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.0,
+                    vertical: 16.0,
+                  ),
+                  textStyle: TextStyle(fontSize: 18),
+                  foregroundColor: Colors.white,
+                ),
+                child: Text('Order Now'),
+              ),
             ),
           ],
         ),
