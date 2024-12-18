@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:buzz_jet/screen/dashboard/home.dart';
+import '../../screen/layout/mainlayout.dart'; // Update import Layout
 import '../../service/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,6 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   Future<void> _login() async {
+    if (_isLoading) return;
+
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -30,18 +32,28 @@ class _LoginPageState extends State<LoginPage> {
       final success = await AuthService.login(email, password);
 
       if (success) {
-        _showMessage("Login berhasil!");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+        // Verify token is saved
+        final token = await AuthService.getToken();
+        debugPrint('Token after login: $token');
+
+        if (!mounted) return;
+
+        // Update navigation to Layout
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Layout()),
         );
       } else {
+        if (!mounted) return;
         _showMessage("Login gagal. Periksa email dan password Anda.");
       }
     } catch (e) {
+      debugPrint('Login error: $e');
+      if (!mounted) return;
       _showMessage("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 

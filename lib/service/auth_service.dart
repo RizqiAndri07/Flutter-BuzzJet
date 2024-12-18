@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
 class AuthService {
-  static const String TOKEN_KEY = 'auth_token';
+  static const String TOKEN_KEY = 'token'; // Changed to match ProfileService
   static SharedPreferences? _prefs;
 
   // Initialize SharedPreferences
@@ -16,7 +16,7 @@ class AuthService {
   static Future<bool> login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('http://backend-buzjet-revamp.test/api/login'),
+        Uri.parse('http://backend-buzjet-api.test/api/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email,
@@ -31,8 +31,10 @@ class AuthService {
         final responseData = jsonDecode(response.body);
         if (responseData['status'] == true) {
           final token = responseData['data']['access_token'];
-          await saveToken(token);
-          return true;
+          final success = await saveToken(token);
+          debugPrint('Token saved successfully: $success');
+          debugPrint('Saved token: $token');
+          return success;
         }
       }
       return false;
@@ -46,8 +48,9 @@ class AuthService {
   static Future<bool> saveToken(String token) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(TOKEN_KEY, token);
-      return true;
+      final result = await prefs.setString(TOKEN_KEY, token);
+      debugPrint('Token saved to SharedPreferences: $result');
+      return result;
     } catch (e) {
       debugPrint('Error saving token: $e');
       return false;
@@ -59,6 +62,7 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString(TOKEN_KEY);
+      debugPrint('Retrieved token: $token');
       return token;
     } catch (e) {
       debugPrint('Error getting token: $e');

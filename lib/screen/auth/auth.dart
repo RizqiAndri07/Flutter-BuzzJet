@@ -4,7 +4,7 @@ import 'dart:convert';
 
 class Auth with ChangeNotifier {
   void signup(String email, String password) async {
-    Uri uri = Uri.parse('http://backend-buzjet-revamp.test/api/register');
+    Uri uri = Uri.parse('http://backend-buzjet-api.test/api/register');
 
     var response = await http.post(uri,
         body:
