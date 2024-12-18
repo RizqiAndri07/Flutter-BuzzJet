@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:buzz_jet/screen/dashboard/home.dart';
+import '../../service/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,41 +24,24 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      final url = Uri.parse("http://backend-buzjet-api.test/api/login");
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email, "password": password}),
-      );
+      final success = await AuthService.login(email, password);
 
-      final responseData = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && responseData['status'] == true) {
-        // Simpan token di SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', responseData['data']['access_token']);
-
-        _showMessage(responseData['message']);
-
-        // Navigasi ke halaman Home
+      if (success) {
+        _showMessage("Login berhasil!");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        _showMessage(responseData['message'] ?? "Login gagal");
+        _showMessage("Login gagal. Periksa email dan password Anda.");
       }
     } catch (e) {
       _showMessage("Terjadi kesalahan. Silakan coba lagi.");
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 

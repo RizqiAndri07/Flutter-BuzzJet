@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../utils/token_storage.dart';
 
 class ProfileService {
-  final String baseUrl = 'http://backend-buzjet-api.test/api';
+  final String baseUrl = 'http://backend-buzjet-revamp.test/api';
   final TokenStorage _tokenStorage = TokenStorage();
 
   Future<Map<String, dynamic>> getProfile() async {

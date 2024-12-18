@@ -1,11 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
 import 'PaymentPage.dart';
+import '../../service/auth_service.dart';
 
 class DetailPackage extends StatelessWidget {
   final Map package;
 
   const DetailPackage({super.key, required this.package});
+
+  Future<void> createBooking(BuildContext context, int seats) async {
+    try {
+      // Ambil token dari AuthService
+      final String? token = await AuthService.getToken();
+
+      if (token == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Silakan login terlebih dahulu')),
+        );
+        // TODO: Navigate to login page
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse('http://backend-buzjet-revamp.test/api/bookings'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'package_id': package['id'],
+          'seats': seats,
+        }),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Booking berhasil dibuat!')),
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentPage(
+              totalPrice: responseData['data']['total_price'].toDouble(),
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal membuat booking: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print('Error creating booking: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +116,7 @@ class DetailPackage extends StatelessWidget {
                     builder: (BuildContext context) {
                       int quantity = 1;
                       double price = double.parse(package['price']);
-                      int capacity = package['capacity'];
+                      int maxSeats = 10; // Maximum seats as per API validation
                       return StatefulBuilder(
                         builder: (context, setState) {
                           return AlertDialog(
@@ -86,7 +147,7 @@ class DetailPackage extends StatelessWidget {
                                         IconButton(
                                           icon: Icon(Icons.add),
                                           onPressed: () {
-                                            if (quantity < capacity) {
+                                            if (quantity < maxSeats) {
                                               setState(() {
                                                 quantity++;
                                               });
@@ -104,21 +165,13 @@ class DetailPackage extends StatelessWidget {
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
+                                onPressed: () => Navigator.of(context).pop(),
                                 child: Text('Cancel'),
                               ),
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PaymentPage(
-                                          totalPrice: quantity * price),
-                                    ),
-                                  );
+                                  createBooking(context, quantity);
                                 },
                                 child: Text('Order'),
                               ),

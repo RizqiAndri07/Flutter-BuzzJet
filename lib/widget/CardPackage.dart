@@ -15,7 +15,7 @@ class CardPackage extends StatelessWidget {
       itemBuilder: (context, index) {
         final package = packages[index];
         final imageUrl =
-            'http://backend-buzjet-api.test/api/packages/${package['id']}/image';
+            'http://backend-buzjet-revamp.test/api/packages/${package['id']}/image';
         print('Attempting to load image from: $imageUrl'); // Debug print
 
         return MouseRegion(

@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchPackages() async {
     final response = await http.get(
-      Uri.parse('http://backend-buzjet-api.test/api/packages'),
+      Uri.parse('http://backend-buzjet-revamp.test/api/packages'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token', // Tambahkan token ke header
