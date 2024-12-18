@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Menghilangkan banner debug
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginScreen(), // Menggunakan LoginScreen sebagai halaman utama
+      home: LoginPage(), // Menggunakan LoginScreen sebagai halaman utama
     );
   }
 }

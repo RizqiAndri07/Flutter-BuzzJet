@@ -28,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
         _isLoading = false;
       });
     } catch (e) {
+      print('Error: $e');
       setState(() {
         _error = e.toString();
         _isLoading = false;
@@ -37,34 +38,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    if (_error != null) {
-      return Center(child: Text('Error: $_error'));
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Profile',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Name: ${_profileData?['data']['name'] ?? 'N/A'}',
-            style: TextStyle(fontSize: 18),
-          ),
-          Text(
-            'Email: ${_profileData?['data']['email'] ?? 'N/A'}',
-            style: TextStyle(fontSize: 18),
-          ),
-        ],
-      ),
+    return Scaffold(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: Text('Error: $_error'))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16),
+                      Text(
+                        'Name: ${_profileData?['name'] ?? 'N/A'}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      // Add other profile fields here
+                    ],
+                  ),
+                ),
     );
   }
 }

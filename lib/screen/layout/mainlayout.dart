@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:buzz_jet/screen/dashboard/home.dart';
 import 'package:buzz_jet/screen/dashboard/profile.dart';
 import 'package:buzz_jet/screen/dashboard/setting.dart';
+import 'package:buzz_jet/screen/dashboard/mytrip.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -17,6 +18,7 @@ class _LayoutState extends State<Layout> {
   // Daftar widget halaman
   final List<Widget> _pages = [
     HomePage(),
+    MyTripPage(),
     ProfilePage(),
     SettingsPage(),
   ];
@@ -41,10 +43,16 @@ class _LayoutState extends State<Layout> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: const Color.fromARGB(255, 8, 69, 120),
+        unselectedItemColor: Colors.blue.withOpacity(0.6),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'My Trip',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;  
+import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 class AuthService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -12,7 +13,7 @@ class AuthService {
     if (token == null) return null;
 
     final url = Uri.parse(
-        "http://backend-buzjet-api.test/api/data"); // Ganti dengan endpoint Anda
+        "http://backend-buzjet-api.test/api/login"); // Ganti dengan endpoint Anda
     final response = await http.get(
       url,
       headers: {
