@@ -3,7 +3,12 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileService {
+<<<<<<< HEAD
   final String baseUrl = 'http://backend-buzjet-api.test/api';
+=======
+  final String baseUrl = 'http://backend-buzjet-revamp.test/api';
+  final TokenStorage _tokenStorage = TokenStorage();
+>>>>>>> 6f4b192478237d37e8a165a35ae4174e26ec5e47
 
   Future<Map<String, dynamic>> getProfile() async {
     final prefs = await SharedPreferences.getInstance();
