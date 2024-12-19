@@ -18,70 +18,68 @@ class _LoginPageState extends State<LoginPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-<<<<<<< HEAD
+    try {
+      final response = await http
+          .post(
+        Uri.parse('http://backend-buzjet-api.test/api/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: jsonEncode({
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        }),
+      )
+          .timeout(
+        Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Connection timeout');
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        // Fix: Extract token from nested JSON structure
+        final token = data['data']['access_token'];
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+
+        // Store user data if needed
+        final userData = data['data']['user'];
+        await prefs.setString('user_data', jsonEncode(userData));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Layout()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print('Error during login: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Connection error: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
     if (email.isEmpty || password.isEmpty) {
       _showMessage("Email dan Password harus diisi!");
       return;
-=======
-      try {
-        final response = await http
-            .post(
-          Uri.parse('http://backend-buzjet-revamp.test/api/login'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: jsonEncode({
-            'email': _emailController.text,
-            'password': _passwordController.text,
-          }),
-        )
-            .timeout(
-          Duration(seconds: 10),
-          onTimeout: () {
-            throw Exception('Connection timeout');
-          },
-        );
-
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body);
-          // Fix: Extract token from nested JSON structure
-          final token = data['data']['access_token'];
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('token', token);
-
-          // Store user data if needed
-          final userData = data['data']['user'];
-          await prefs.setString('user_data', jsonEncode(userData));
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Layout()),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login failed: ${response.body}')),
-          );
-        }
-      } catch (e) {
-        print('Error during login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Connection error: ${e.toString()}')),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
->>>>>>> 6f4b192478237d37e8a165a35ae4174e26ec5e47
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    //   _isLoading = true;
+    // });
 
     try {
       final response = await http.post(
@@ -107,9 +105,9 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       _showMessage('An error occurred');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      // setState(() {
+      //   _isLoading = false;
+      // });
     }
   }
 

@@ -1,38 +1,75 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'auth_service.dart';
 
 class ProfileService {
-<<<<<<< HEAD
-  final String baseUrl = 'http://backend-buzjet-api.test/api';
-=======
-  final String baseUrl = 'http://backend-buzjet-revamp.test/api';
-  final TokenStorage _tokenStorage = TokenStorage();
->>>>>>> 6f4b192478237d37e8a165a35ae4174e26ec5e47
+  static const String baseUrl = 'http://backend-buzjet-api.test/api';
 
   Future<Map<String, dynamic>> getProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    final token = await AuthService.getToken();
 
     if (token == null) {
       throw Exception('No token found');
     }
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/profile'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Accept': 'application/json',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/profile'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+      print('Profile Response status: ${response.statusCode}');
+      print('Profile Response body: ${response.body}');
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      return responseData['data']['user'];
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['data'] != null &&
+            responseData['data']['user'] != null) {
+          return responseData['data']['user'];
+        }
+        throw Exception('Invalid profile data format');
+      }
+      throw Exception('Failed to load profile: ${response.statusCode}');
+    } catch (e) {
+      print('Error fetching profile: $e');
+      throw Exception('Failed to load profile: $e');
     }
-    throw Exception('Failed to load profile');
+  }
+
+  Future<void> updateProfile(int userId, String name, String email) async {
+    final token = await AuthService.getToken();
+
+    if (token == null) {
+      throw Exception('No token found');
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/users/$userId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+        }),
+      );
+
+      print('Update Profile Response status: ${response.statusCode}');
+      print('Update Profile Response body: ${response.body}');
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update profile: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating profile: $e');
+      throw Exception('Failed to update profile: $e');
+    }
   }
 }

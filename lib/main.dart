@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:buzz_jet/screen/auth/login.dart'; // Import LoginScreen
-// import 'package:buzz_jet/screen/layout/mainlayout.dart';
+import 'screen/pages/login_page.dart';
+import 'service/auth_service.dart';
+import 'screen/layout/mainlayout.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AuthService.init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +17,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Menghilangkan banner debug
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginPage(), // Menggunakan LoginScreen sebagai halaman utama
+      home: FutureBuilder<bool>(
+        future: AuthService.isLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return snapshot.data == true ? const Layout() : LoginPage();
+        },
+      ),
     );
   }
 }

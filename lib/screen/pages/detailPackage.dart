@@ -25,7 +25,7 @@ class DetailPackage extends StatelessWidget {
       }
 
       final response = await http.post(
-        Uri.parse('http://backend-buzjet-revamp.test/api/bookings'),
+        Uri.parse('http://backend-buzjet-api.test/api/bookings'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ import 'package:buzz_jet/screen/dashboard/setting.dart';
 import 'package:buzz_jet/screen/dashboard/mytrip.dart';
 
 class Layout extends StatefulWidget {
-  const Layout({super.key});
+  const Layout({super.key}); // Make sure constructor is const
 
   @override
   _LayoutState createState() => _LayoutState();
